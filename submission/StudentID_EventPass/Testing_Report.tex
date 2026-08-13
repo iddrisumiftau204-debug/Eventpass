@@ -1,0 +1,23 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable}
+\begin{document}
+\title{Testing Report}
+\author{22424830}
+\date{\today}
+\maketitle
+\section{Test Strategy}
+Backend unit/integration tests were used to validate the ticketing and check-in logic. The concurrency test is the highest-risk requirement.
+\section{Results}
+\begin{longtable}{p{5cm}p{2.5cm}p{4cm}}
+\textbf{Test} & \textbf{Expected} & \textbf{Result} \\
+Unique ticket code generation & Valid format & Pass \\
+Valid check-in & HTTP 200 & Pass \\
+Duplicate check-in & HTTP 409 & Pass \\
+Unknown code & HTTP 404 & Pass \\
+Concurrent check-in & One success, four conflicts & Pass \\
+Duplicate attendee email & HTTP 409 & Pass \\
+\end{longtable}
+\section{Validation}
+Backend tests and frontend build verification were executed successfully in the local environment.
+\end{document}

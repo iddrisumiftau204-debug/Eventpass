@@ -1,0 +1,33 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\begin{document}
+\title{Software Requirements Specification (SRS)}
+\author{22424830}
+\date{\today}
+\maketitle
+\section{Introduction}
+EventPass is a web application for event organizers to manage event attendance.
+\section{Product Perspective}
+The system is a single-tenant event management system for a small organizer workflow.
+\section{Functional Requirements}
+\begin{enumerate}[leftmargin=1.8em]
+  \item Organizer registration and login
+  \item Event creation and management
+  \item Attendee registration
+  \item Unique ticket generation
+  \item Ticket lookup and check-in
+  \item Duplicate prevention
+  \item Event statistics
+\end{enumerate}
+\section{Non-functional Requirements}
+\begin{itemize}[leftmargin=1.5em]
+  \item Secure authentication
+  \item Data isolation
+  \item Fast check-in workflow
+  \item Simple setup
+\end{itemize}
+\section{Scope}
+The project includes the essential event ticketing flow and excludes enterprise-level functionality.
+\end{document}

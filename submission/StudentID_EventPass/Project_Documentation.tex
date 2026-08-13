@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable}
+\begin{document}
+\title{EventPass Project Documentation}
+\author{22424830}
+\date{\today}
+\maketitle
+\tableofcontents
+\section{Project Title}
+EventPass — Event Ticketing \& Check-in System
+\section{Problem Statement}
+Event organizers need a lightweight system to manage attendees, assign ticket codes, and perform fast check-ins. EventPass addresses this with a focused web-based workflow under a 48-hour exam constraint.
+\section{Aim and Objectives}
+\begin{itemize}[leftmargin=1.5em]
+  \item Create and manage events
+  \item Register attendees and generate unique tickets
+  \item Provide QR-based ticket presentation
+  \item Support fast check-in by staff
+  \item Enforce organizer-only access to data
+\end{itemize}
+\section{Stakeholders}
+\begin{itemize}[leftmargin=1.5em]
+  \item Event organizers
+  \item Check-in staff
+  \item Attendees
+  \item Examiners
+\end{itemize}
+\section{Requirements Analysis}
+This project prioritizes a minimal, correct core workflow. The system is intentionally scoped to a single organizer role, event registration, attendee management, and concurrency-safe check-ins.
+\section{SRS Summary}
+The system supports organizer registration and login, event creation, attendee registration, unique ticket codes, and ticket lookup/check-in. Non-functional requirements focus on security, fast check-in, and data isolation.
+\section{Software Effort Estimation}
+Selected technique: expert estimation. Estimated effort: 40-50 person-hours over 48 hours. Scope was controlled to fit the time constraint.
+\section{System Analysis}
+The architecture uses a React frontend, Express backend, and SQLite database. The main business flow is organizer → event → attendee → ticket → check-in.
+\section{System Design}
+The design separates presentation, API, and persistence layers. The most critical design decision is atomic SQL update logic for safe concurrent check-ins.
+\section{Implementation}
+Core features implemented: authentication, event management, attendee registration, ticket generation, QR output, and check-in processing.
+\section{Testing}
+Backend tests validate ticket generation and check-in behavior, especially concurrency. The frontend build was also verified successfully.
+\section{Technical Debt}
+The project carries deliberate debt such as SQLite-only design, simple auth model, and limited security hardening. This is documented in the technical debt plan.
+\section{Deployment}
+The project includes a Render deployment config and local deployment instructions for a hosted environment.
+\section{User Manual}
+Users register, log in, create events, add attendees, and process check-ins via ticket codes or QR scans.
+\section{Maintenance Strategy}
+Corrective, adaptive, perfective, and preventive maintenance are all relevant. Future work includes better role management, scale-up, and security hardening.
+\section{Future Evolution}
+Potential additions include payment integration, role-based access, email notifications, analytics, and migration to PostgreSQL.
+\section{Limitations}
+No attendee self-service portal; no payment system; no full admin role model; scaling beyond a small event is limited.
+\section{Conclusion}
+EventPass demonstrates a realistic capstone-style delivery that fits within the 48-hour exam scope while still covering the software engineering lifecycle.
+\end{document}

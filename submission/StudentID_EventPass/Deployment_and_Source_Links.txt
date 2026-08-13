@@ -1,0 +1,10 @@
+Student Name: Student Name
+Student ID: 22424830
+Project Title: EventPass
+Live Application: https://eventpass-22424830.loca.lt
+Admin URL: N/A
+Test Username: demo@eventpass.local
+Test Password: DemoPass123!
+Admin Username: iddrisumiftau204@gmail.com
+Admin Password: 0247007005
+Source Code Repository: https://github.com/iddrisumiftau204-debug/Eventpass

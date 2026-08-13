@@ -1,0 +1,19 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable}
+\begin{document}
+\title{Technical Debt Plan}
+\author{22424830}
+\date{\today}
+\maketitle
+\section{Debt Register}
+\begin{longtable}{p{3cm}p{2.5cm}p{2.5cm}p{2.5cm}p{4cm}}
+\textbf{Debt} & \textbf{Cause} & \textbf{Impact} & \textbf{Priority} & \textbf{Resolution} \\
+SQLite-only design & Fast local setup & Limited scale & Medium & Migrate to PostgreSQL \\
+No capacity enforcement & Time constraint & Overbooking & High & Add validation checks \\
+Single organizer role & Simplified scope & Limited access model & Medium & Add staff roles \\
+Basic security controls & Scope reduction & Security exposure & High & Add rate limiting and lockout \\
+\end{longtable}
+\section{Repayment Plan}
+Version 2.x should address users, security, and scale while preserving core ticketing behavior.
+\end{document}
