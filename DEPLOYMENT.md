@@ -16,15 +16,31 @@ only you can authorize.
 
 ## 1. Push this repo to GitHub
 
-The local repo has already been initialized with a first commit. Create
-an empty repository on GitHub (no README/license — this repo already
-has files), then from `C:\Users\User\Desktop\eventpass`:
+The local repo has already been initialized, on branch `main`, with a
+first commit. Create an empty repository on GitHub (no
+README/license/gitignore — this repo already has files), then from
+`C:\Users\User\Desktop\eventpass`:
 
 ```powershell
-git remote add origin https://github.com/<your-username>/<your-repo>.git
-git branch -M main
-git push -u origin main
+& "C:\Program Files\Git\cmd\git.exe" remote add origin https://github.com/<your-username>/<your-repo>.git
+& "C:\Program Files\Git\cmd\git.exe" push -u origin main
 ```
+
+(Full path to `git.exe` because it was just installed and your shell's
+`PATH` hasn't picked it up yet — open a new terminal and plain `git`
+should work from then on.)
+
+The commit author is currently a placeholder (`User
+<user@localhost>`). If you want commits attributed to your real
+identity before pushing, run once:
+
+```powershell
+& "C:\Program Files\Git\cmd\git.exe" config --global user.name "Your Name"
+& "C:\Program Files\Git\cmd\git.exe" config --global user.email "you@example.com"
+```
+
+(this only affects future commits, not the existing one, unless you
+also amend it: `git commit --amend --reset-author --no-edit`)
 
 ## 2. Create the Blueprint on Render
 
