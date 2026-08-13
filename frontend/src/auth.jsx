@@ -1,12 +1,24 @@
 import { createContext, useContext, useState, useCallback } from 'react';
 import { api } from './api/client';
 
+const DEFAULT_USER = {
+  id: 'user-current',
+  name: 'Iddrisu Miftau',
+  email: 'iddrisumiftau204@gmail.com'
+};
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const raw = localStorage.getItem('eventpass_user');
-    return raw ? JSON.parse(raw) : null;
+
+    if (raw) {
+      return JSON.parse(raw);
+    }
+
+    localStorage.setItem('eventpass_user', JSON.stringify(DEFAULT_USER));
+    return DEFAULT_USER;
   });
 
   const login = useCallback(async (email, password) => {
@@ -23,6 +35,18 @@ export function AuthProvider({ children }) {
     setUser(data.user);
   }, []);
 
+  const updateProfile = useCallback((updates = {}) => {
+    setUser((currentUser) => {
+      const nextUser = {
+        ...(currentUser || DEFAULT_USER),
+        ...updates
+      };
+
+      localStorage.setItem('eventpass_user', JSON.stringify(nextUser));
+      return nextUser;
+    });
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem('eventpass_token');
     localStorage.removeItem('eventpass_user');
@@ -30,7 +54,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, updateProfile, logout }}>
       {children}
     </AuthContext.Provider>
   );
