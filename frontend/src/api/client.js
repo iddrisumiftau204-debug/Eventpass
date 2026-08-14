@@ -52,6 +52,8 @@ export const api = {
 
   listAttendees: (eventId) => request(`/events/${eventId}/attendees`),
   registerAttendee: (eventId, payload) => request(`/events/${eventId}/attendees`, { method: 'POST', body: payload }),
+  updateAttendee: (eventId, attendeeId, payload) => request(`/events/${eventId}/attendees/${attendeeId}`, { method: 'PUT', body: payload }),
+  deleteAttendee: (eventId, attendeeId) => request(`/events/${eventId}/attendees/${attendeeId}`, { method: 'DELETE' }),
 
   lookupTicket: (code) => request(`/tickets/${code}`),
   checkInTicket: (code) => request(`/tickets/${code}/checkin`, { method: 'POST' }),

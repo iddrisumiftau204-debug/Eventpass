@@ -50,4 +50,43 @@ router.post('/', (req, res) => {
   res.status(201).json(attendee);
 });
 
+// PUT /events/:id/attendees/:attendeeId - update attendee
+router.put('/:attendeeId', (req, res) => {
+  const event = findOwnedEvent(req.params.id, req.user.id);
+  if (!event) {
+    return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Event not found' } });
+  }
+
+  const attendee = db.prepare('SELECT * FROM attendees WHERE id = ? AND eventId = ?').get(req.params.attendeeId, event.id);
+  if (!attendee) {
+    return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Attendee not found' } });
+  }
+
+  const { name, email } = req.body || {};
+  db.prepare('UPDATE attendees SET name = ?, email = ? WHERE id = ?').run(
+    name ?? attendee.name,
+    email ?? attendee.email,
+    attendee.id
+  );
+
+  const updated = db.prepare('SELECT * FROM attendees WHERE id = ?').get(attendee.id);
+  res.json(updated);
+});
+
+// DELETE /events/:id/attendees/:attendeeId
+router.delete('/:attendeeId', (req, res) => {
+  const event = findOwnedEvent(req.params.id, req.user.id);
+  if (!event) {
+    return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Event not found' } });
+  }
+
+  const attendee = db.prepare('SELECT * FROM attendees WHERE id = ? AND eventId = ?').get(req.params.attendeeId, event.id);
+  if (!attendee) {
+    return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Attendee not found' } });
+  }
+
+  db.prepare('DELETE FROM attendees WHERE id = ?').run(attendee.id);
+  res.status(204).send();
+});
+
 module.exports = router;
