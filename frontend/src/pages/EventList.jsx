@@ -7,6 +7,7 @@ export default function EventList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ name: '', date: '', venue: '', capacity: '' });
   const [saving, setSaving] = useState(false);
 
@@ -31,13 +32,19 @@ export default function EventList() {
     setSaving(true);
     setError('');
     try {
-      await api.createEvent({
+      const payload = {
         name: form.name,
         date: form.date,
         venue: form.venue,
         capacity: form.capacity ? Number(form.capacity) : null,
-      });
+      };
+      if (editingId) {
+        await api.updateEvent(editingId, payload);
+      } else {
+        await api.createEvent(payload);
+      }
       setForm({ name: '', date: '', venue: '', capacity: '' });
+      setEditingId(null);
       setShowForm(false);
       await load();
     } catch (err) {
@@ -47,12 +54,43 @@ export default function EventList() {
     }
   }
 
+  async function handleEdit(event) {
+    setEditingId(event.id);
+    setForm({
+      name: event.name,
+      date: event.date,
+      venue: event.venue || '',
+      capacity: event.capacity || '',
+    });
+    setShowForm(true);
+  }
+
+  async function handleDelete(eventId) {
+    if (!window.confirm('Are you sure you want to delete this event?')) return;
+    setSaving(true);
+    setError('');
+    try {
+      await api.deleteEvent(eventId);
+      await load();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleCancel() {
+    setForm({ name: '', date: '', venue: '', capacity: '' });
+    setEditingId(null);
+    setShowForm(false);
+  }
+
   return (
     <div className="page">
       <div className="page-header">
         <h1>Your events</h1>
-        <button className="btn-primary" onClick={() => setShowForm((s) => !s)}>
-          {showForm ? 'Cancel' : '+ New event'}
+        <button className="btn-primary" onClick={() => (editingId ? handleCancel() : setShowForm((s) => !s))}>
+          {editingId ? 'Cancel edit' : showForm ? 'Cancel' : '+ New event'}
         </button>
       </div>
 
@@ -87,7 +125,7 @@ export default function EventList() {
             />
           </label>
           <button className="btn-primary" type="submit" disabled={saving}>
-            {saving ? 'Creating…' : 'Create event'}
+            {saving ? (editingId ? 'Updating…' : 'Creating…') : (editingId ? 'Update event' : 'Create event')}
           </button>
         </form>
       )}
@@ -106,6 +144,24 @@ export default function EventList() {
                   {new Date(ev.date).toLocaleString()} {ev.venue ? `· ${ev.venue}` : ''}
                 </span>
               </Link>
+              <div className="event-row-actions">
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => handleEdit(ev)}
+                  disabled={saving}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  className="btn-danger"
+                  onClick={() => handleDelete(ev.id)}
+                  disabled={saving}
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>

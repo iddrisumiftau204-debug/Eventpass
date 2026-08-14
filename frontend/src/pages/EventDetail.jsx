@@ -12,6 +12,7 @@ export default function EventDetail() {
   const [form, setForm] = useState({ name: '', email: '' });
   const [saving, setSaving] = useState(false);
   const [ticketModal, setTicketModal] = useState(null);
+  const [editingAttendeeId, setEditingAttendeeId] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -36,14 +37,43 @@ export default function EventDetail() {
     setSaving(true);
     setError('');
     try {
-      await api.registerAttendee(id, form);
+      if (editingAttendeeId) {
+        await api.updateAttendee(id, editingAttendeeId, form);
+      } else {
+        await api.registerAttendee(id, form);
+      }
       setForm({ name: '', email: '' });
+      setEditingAttendeeId(null);
       await load();
     } catch (err) {
       setError(err.message);
     } finally {
       setSaving(false);
     }
+  }
+
+  async function handleEditAttendee(attendee) {
+    setEditingAttendeeId(attendee.id);
+    setForm({ name: attendee.name, email: attendee.email });
+  }
+
+  async function handleDeleteAttendee(attendeeId) {
+    if (!window.confirm('Are you sure you want to delete this attendee?')) return;
+    setSaving(true);
+    setError('');
+    try {
+      await api.deleteAttendee(id, attendeeId);
+      await load();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleCancelEdit() {
+    setForm({ name: '', email: '' });
+    setEditingAttendeeId(null);
   }
 
   if (loading) return <div className="page"><p className="muted">Loading…</p></div>;
@@ -95,8 +125,13 @@ export default function EventDetail() {
           />
         </label>
         <button className="btn-primary" type="submit" disabled={saving}>
-          {saving ? 'Registering…' : 'Register attendee'}
+          {saving ? (editingAttendeeId ? 'Updating…' : 'Registering…') : (editingAttendeeId ? 'Update attendee' : 'Register attendee')}
         </button>
+        {editingAttendeeId && (
+          <button type="button" className="btn-secondary" onClick={handleCancelEdit} disabled={saving}>
+            Cancel
+          </button>
+        )}
       </form>
 
       <h2>Attendees</h2>
@@ -110,6 +145,7 @@ export default function EventDetail() {
               <th>Email</th>
               <th>Ticket code</th>
               <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -136,6 +172,26 @@ export default function EventDetail() {
                   ) : (
                     <span className="badge">Not checked in</span>
                   )}
+                </td>
+                <td>
+                  <div className="action-buttons">
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={() => handleEditAttendee(a)}
+                      disabled={saving}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-danger"
+                      onClick={() => handleDeleteAttendee(a.id)}
+                      disabled={saving}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
